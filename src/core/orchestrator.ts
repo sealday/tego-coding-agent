@@ -74,14 +74,15 @@ export class Orchestrator {
   async run(maxTasks = 10, maxTokens?: number): Promise<void> {
     await this.initializeModules();
     let completedThisRun = 0;
+    let tokensUsedThisRun = 0;
 
     while (completedThisRun < maxTasks) {
       if (await this.stateManager.isProjectComplete()) break;
       const task = await this.stateManager.getNextPendingTask();
       if (!task) break;
-      await this.runOneTask(task);
+      tokensUsedThisRun += await this.runOneTask(task);
       completedThisRun += 1;
-      if (maxTokens && (await this.stateManager.getStatistics()).completed >= maxTokens) break;
+      if (maxTokens !== undefined && tokensUsedThisRun >= maxTokens) break;
     }
   }
 
@@ -99,7 +100,7 @@ export class Orchestrator {
     await this.costTracker.initialize();
   }
 
-  private async runOneTask(task: Task): Promise<void> {
+  private async runOneTask(task: Task): Promise<number> {
     await this.stateManager.updateTaskStatus(task.id, "in_progress");
     await this.stateManager.incrementTaskAttempts(task.id);
     const current = (await this.stateManager.loadTasks()).tasks.find((candidate) => candidate.id === task.id) ?? task;
@@ -128,7 +129,7 @@ export class Orchestrator {
 
     if (!result.success) {
       await this.failOrRetry(current, result.error ?? result.stopReason);
-      return;
+      return result.inputTokens + result.outputTokens;
     }
 
     const report = await this.evaluator.evaluate(current, current.attempts + 1);
@@ -138,6 +139,7 @@ export class Orchestrator {
     } else {
       await this.failOrRetry(current, report.feedbackForGenerator || report.summary, report);
     }
+    return result.inputTokens + result.outputTokens;
   }
 
   private async failOrRetry(task: Task, details: string, report?: EvaluatorReport): Promise<void> {

@@ -48,6 +48,25 @@ describe("Orchestrator", () => {
     expect(await readFile(join(projectDir, ".harness", "progress.txt"), "utf-8")).toContain("completed");
   });
 
+  it("stops after a task when the token budget is reached", async () => {
+    const manager = new StateManager(projectDir);
+    await manager.initializeHarness();
+    await manager.saveSpec("# Spec");
+    await manager.saveTasks(tasks());
+
+    const orchestrator = new Orchestrator(projectDir, {
+      providerManager: { initialize: async () => undefined, getAuthStorage: () => ({}), getPIModel: () => ({ provider: "p", id: "m" }), getCurrentProvider: () => ({ model: "m" }), printStatus: () => undefined } as any,
+      createPISession: async () => ({ run: async () => ({ success: true, stopReason: "stop", inputTokens: 3, outputTokens: 4 }), dispose: () => undefined, abort: () => undefined }),
+      evaluator: { evaluate: async () => ({ summary: "Pass", criteriaResults: [], totalWeightedScore: 1, threshold: 0.75, finalDecision: "pass", feedbackForGenerator: "" }) } as any,
+    });
+
+    await orchestrator.run(10, 5);
+
+    const updated = await manager.loadTasks();
+    expect(updated.statistics.completed).toBe(1);
+    expect(updated.statistics.pending).toBe(1);
+  });
+
   it("returns failed evaluations to pending until the retry limit", async () => {
     const manager = new StateManager(projectDir);
     await manager.initializeHarness();
