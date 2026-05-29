@@ -1,5 +1,6 @@
 import ora from "ora";
 import { createProviderManager } from "../core/provider-manager.js";
+import type { ProviderConfig } from "../types/quality.js";
 
 export interface ProviderCommandOptions {
   list?: boolean;
@@ -45,7 +46,7 @@ export async function providerCommand(options: ProviderCommandOptions, deps: Pro
   }
 
   if (options.edit) {
-    const updates: Record<string, string> = {};
+    const updates: Partial<ProviderConfig> = {};
     if (options.name) updates.name = options.name;
     if (options.token) updates.authToken = options.token;
     if (options.url) updates.baseUrl = options.url;
@@ -55,7 +56,7 @@ export async function providerCommand(options: ProviderCommandOptions, deps: Pro
       exit(1);
       return;
     }
-    const ok = await manager.updateProvider(options.edit, updates as any);
+    const ok = await manager.updateProvider(options.edit, updates);
     if (!ok) {
       error(`Provider not found: ${options.edit}`);
       exit(1);
