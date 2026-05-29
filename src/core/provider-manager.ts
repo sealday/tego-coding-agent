@@ -228,7 +228,7 @@ export class ProviderManager {
     const statePath = join(this.configDir, ".state.json");
     if (!existsSync(statePath)) return { totalSwitches: 0, providers: {} };
     const parsed = JSON.parse(await readFile(statePath, "utf-8")) as ProviderStateFile;
-    return { totalSwitches: 0, providers: {}, ...parsed, providers: parsed.providers ?? {} };
+    return { ...parsed, totalSwitches: parsed.totalSwitches ?? 0, providers: parsed.providers ?? {} };
   }
 
   private async saveState(): Promise<void> {

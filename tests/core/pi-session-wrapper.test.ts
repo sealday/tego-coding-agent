@@ -31,7 +31,7 @@ describe("createPISession", () => {
         messageHandler: { reset() {}, handleToolStart() {}, handleToolEnd() {}, handleSessionEvent() {} },
       },
       {
-        createAgentSession: async (options: any) => {
+        createAgentSession: (async (options: any) => {
           capturedOptions = options;
           const session = {
             agent: { state: { messages: [] as any[] } },
@@ -50,7 +50,7 @@ describe("createPISession", () => {
             session,
             extensionsResult: { extensions: [], errors: [], runtime: {} },
           };
-        },
+        }) as any,
       },
     );
 

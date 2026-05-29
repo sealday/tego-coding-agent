@@ -87,3 +87,42 @@ export interface SyncCommandOptions {
   fix?: boolean;
   docs?: string;
 }
+
+export type SyncDiscrepancyType = "doc_without_task" | "task_without_doc" | "code_mismatch" | "doc_changed";
+export type SyncSeverity = "high" | "medium" | "low";
+
+export interface SyncDiscrepancy {
+  id: string;
+  type: SyncDiscrepancyType;
+  severity: SyncSeverity;
+  description: string;
+  featureTitle?: string;
+  autoFixable: boolean;
+  fixAction?: { kind: "add_task" | "review"; description: string };
+}
+
+export interface SyncFixResult {
+  discrepancyId: string;
+  applied: boolean;
+  description: string;
+}
+
+export interface SyncReport {
+  mode: "check" | "fix";
+  summary: {
+    totalFeatures: number;
+    alignedFeatures: number;
+    discrepancies: number;
+    bySeverity: { high: number; medium: number; low: number };
+    autoFixed: number;
+    needsReview: number;
+  };
+  discrepancies: SyncDiscrepancy[];
+  fixes: SyncFixResult[];
+}
+
+export interface SyncEngineOptions {
+  checkOnly: boolean;
+  autoFix: boolean;
+  docsDir: string;
+}
