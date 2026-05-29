@@ -1,6 +1,6 @@
 # Tego Coding Agent
 
-Tego Coding Agent is a Bun-based reimplementation of the `autorun-harness` project. It provides a long-running autonomous development harness that turns requirements into a specification, executable tasks, generator work, evaluator reports, provider management, and documentation-to-task synchronization.
+Tego Coding Agent is a Bun-based autonomous coding system built on the PI Coding Agent SDK. It turns requirements into a specification, executable tasks, generator work, evaluator reports, provider management, and documentation-to-task synchronization.
 
 ## Baseline
 
@@ -29,7 +29,7 @@ bun run src/index.ts run ./my-app --max-tasks 5
 bun run src/index.ts sync ./my-app --fix
 ```
 
-The package also exposes `tego-coding-agent` and `autorun-harness` bin aliases for installed usage.
+The package exposes the `tego-coding-agent` bin for installed usage.
 
 ## Architecture
 

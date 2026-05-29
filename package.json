@@ -4,8 +4,7 @@
   "type": "module",
   "description": "A Bun-based autonomous coding harness built on the latest PI Coding Agent SDK.",
   "bin": {
-    "tego-coding-agent": "./src/index.ts",
-    "autorun-harness": "./src/index.ts"
+    "tego-coding-agent": "./src/index.ts"
   },
   "scripts": {
     "build": "bun build ./src/index.ts --outdir ./dist --target node --packages external",
