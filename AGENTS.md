@@ -6,6 +6,7 @@
 - Do not introduce npm, pnpm, yarn lockfiles, or Node-only script assumptions unless the user explicitly asks for a migration.
 - Keep generated project content, prompts, documentation, comments, and user-facing CLI text in English.
 - The PI integration must target the current `@earendil-works/pi-*` package family from `https://github.com/earendil-works/pi`.
+- This reimplementation was verified against PI upstream main commit `7be8a10d2358fe60f1cf4507140aa9cfa81682ee` and package version `0.77.0`.
 
 ## Development workflow
 
