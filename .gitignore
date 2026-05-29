@@ -1,0 +1,7 @@
+node_modules/
+dist/
+coverage/
+.harness/
+.omx/
+.DS_Store
+*.log
